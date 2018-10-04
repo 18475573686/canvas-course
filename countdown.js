@@ -16,10 +16,13 @@ window.onload = function () {
 
   canvas.width = WINDOW_WIDTH; // 设置canvas的宽度
   canvas.height = WINDOW_HEIGHT; // 设置canvas的调试
-
-  curShowTimeSeconds = getCurrentShowTimeSeconds(); // 在渲染之前，获取秒
-  render(ctx); // 渲染倒计时方法
   
+  curShowTimeSeconds = getCurrentShowTimeSeconds(); // 在渲染之前，获取秒
+  // render(ctx); // 渲染倒计时方法
+  setInterval(function () {
+    render(ctx); // 渲染倒计时方法
+    update();
+  }, 50);
 }
 function getCurrentShowTimeSeconds () { // 获取剩余的秒
   var curTime = new Date(); // 获取当前的时间
@@ -27,7 +30,22 @@ function getCurrentShowTimeSeconds () { // 获取剩余的秒
   ret = Math.round(ret/1000); // 把毫秒数转成秒
   return ret >= 0 ? ret : 0; // 返回已经转成秒的数
 }
-function render(ctx) { // 绘制canvas的画布,渲染倒计时方法
+function update () {
+  var nextShowTimeSeconds = getCurrentShowTimeSeconds(); // 下一次要显示的时间是多少
+  var nextHours = parseInt(nextShowTimeSeconds / 3600); // 下一次要显示的小时数
+  var nextMinutes = parseInt((nextShowTimeSeconds - nextHours * 3600) / 60); // 下一次要显示的分钟数
+  var nextSeconds = nextShowTimeSeconds % 60; // 下一个要显示的秒数
+
+  var curHours = parseInt(curShowTimeSeconds / 3600); // 当前显示的小时数
+  var curMinutes = parseInt((curShowTimeSeconds - curHours * 3600) / 60); // 当前显示的分钟数
+  var curSeconds = curShowTimeSeconds % 60; // 当前显示的秒数
+
+  if (nextSeconds != curSeconds) { // 如果下一次显示的与当前的秒数显示不相等，
+    curShowTimeSeconds = nextShowTimeSeconds; // 那么，把获取到的下一次要显示的时间赋值给当前要显示的时间
+  }
+}
+function render (ctx) { // 绘制canvas的画布,渲染倒计时方法
+  ctx.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT); // 清除canvas画布的内容
   var hours = parseInt(curShowTimeSeconds/3600), // 小时
       minutes = parseInt((curShowTimeSeconds - hours*3600)/60), // 分钟
       seconds = parseInt(curShowTimeSeconds%60); // 钞
