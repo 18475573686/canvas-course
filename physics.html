@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>physics</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #ccc;display:block;"></canvas>
+  <script>
+    var ball = {x: 512, y: 100, r: 20, g: 2, vx: -4, vy: 0, color: '#005588'};
+    window.onload = function () {
+      /** @type HTMLCanvasElement */
+      var canvas = document.getElementById('canvas');
+      canvas.width = 1024;
+      canvas.height = 768;
+      var ctx = canvas.getContext('2d');
+      
+      setInterval(function () {
+        render(ctx);
+        update();
+      }, 50);
+    }
+    function update () {
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      ball.vy += ball.g;
+      if (ball.y >= 768 - ball.r) { // 如果小球掉到屏幕底部
+        ball.y = 768 - ball.r; // 小球掉到底部的第一秒，小球的位置就在底部
+        ball.vy = -ball.vy*0.5;
+      }
+    }
+    function render (ctx) {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fillStyle = ball.color;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, 2*Math.PI);
+      ctx.closePath();
+      ctx.fill();
+    }
+  </script>
+</body>
+</html>
