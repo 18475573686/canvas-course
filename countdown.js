@@ -4,6 +4,11 @@ var RADIUS = 8; // 小球的半径
 var MARGIN_TOP = 60; // 第一个数字距离画布顶部的距离 
 var MARGIN_LEFT = 30; // 第一个数字距离画布左边的距离
 
+const endTime = new Date(2018, 9, 06, 20, 05, 30); // 截止时间
+var curShowTimeSeconds = 0; // 剩余时间的秒
+
+
+
 window.onload = function () {
   /** @type HTMLCanvasElement */
   var canvas = this.document.getElementById('canvas'); // 获取canvas元素
@@ -12,13 +17,20 @@ window.onload = function () {
   canvas.width = WINDOW_WIDTH; // 设置canvas的宽度
   canvas.height = WINDOW_HEIGHT; // 设置canvas的调试
 
+  curShowTimeSeconds = getCurrentShowTimeSeconds(); // 在渲染之前，获取秒
   render(ctx); // 渲染倒计时方法
   
 }
+function getCurrentShowTimeSeconds () { // 获取剩余的秒
+  var curTime = new Date(); // 获取当前的时间
+  var ret =  endTime.getTime() - curTime.getTime(); // 获取毫秒数
+  ret = Math.round(ret/1000); // 把毫秒数转成秒
+  return ret >= 0 ? ret : 0; // 返回已经转成秒的数
+}
 function render(ctx) { // 绘制canvas的画布,渲染倒计时方法
-  var hours = 12, // 小时
-      minutes = 34, // 分钟
-      seconds = 56; // 钞
+  var hours = parseInt(curShowTimeSeconds/3600), // 小时
+      minutes = parseInt((curShowTimeSeconds - hours*3600)/60), // 分钟
+      seconds = parseInt(curShowTimeSeconds%60); // 钞
   renderDigit(MARGIN_LEFT, MARGIN_TOP, parseInt(hours/10), ctx); // 渲染小时的第一个数字
   // 渲染小时的第二个数字，x = 第一个数字距离左边的距离 + 第一个数字占用的距离(14个小圆点*圆点的半径)
   renderDigit(MARGIN_LEFT + 15*(RADIUS+1), MARGIN_TOP, parseInt(hours%10), ctx);
